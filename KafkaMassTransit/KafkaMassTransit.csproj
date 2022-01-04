@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-KafkaMassTransit-E676966E-D41B-4702-8661-4FEF1E1086EC</UserSecretsId>
+        <RootNamespace>KafkaMassTransit</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit" Version="7.3.1-develop.340" />
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1-develop.340" />
+        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1-develop.340" />
+        <PackageReference Include="MassTransit.Kafka" Version="7.3.1-develop.340" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KafkaMassTransit.Data\KafkaMassTransit.Data.csproj" />
+    </ItemGroup>
+</Project>
