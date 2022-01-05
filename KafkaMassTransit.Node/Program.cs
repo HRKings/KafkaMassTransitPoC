@@ -54,9 +54,11 @@ try
         };
 
         message.Text = $"(Producer) {value}";
+        message.IsEventOnly = true;
         await producer.Produce(message);
 
         message.Text = $"(Request) {value}";
+        message.IsEventOnly = false;
         var response = await request.GetResponse<KafkaResponse>(message);
         
         Console.WriteLine(response.Message.Text);

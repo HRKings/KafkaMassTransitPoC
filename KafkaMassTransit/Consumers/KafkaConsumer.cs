@@ -7,7 +7,11 @@ public class KafkaConsumer: IConsumer<KafkaMessage>
 {
     public Task Consume(ConsumeContext<KafkaMessage> context)
     {
-        Console.WriteLine($"[{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}] {context.Message.Text} - {context.Message.SentTimestamp}");
+        Console.WriteLine(
+            $"[{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}] {context.Message.Text} - {context.Message.SentTimestamp}");
+
+        if (context.Message.IsEventOnly)
+            return Task.CompletedTask;
 
         return context.RespondAsync<KafkaResponse>(new
         {
