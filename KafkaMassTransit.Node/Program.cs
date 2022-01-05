@@ -31,18 +31,18 @@ try
     {
         var value = await Task.Run(() =>
         {
-            Console.WriteLine($"[{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}] Enter text (or quit to exit)");
+            Console.WriteLine($"Enter text to send (or quit to exit)");
             Console.Write("> ");
             return Console.ReadLine();
         });
 
         if("quit".Equals(value, StringComparison.OrdinalIgnoreCase))
             break;
-
+        
         await producer.Produce(new
         {
             Text = value,
-            Number = Random.Shared.Next(1234, 9999)
+            Number = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         });
     }
     while (true);
