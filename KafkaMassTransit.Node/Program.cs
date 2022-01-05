@@ -40,6 +40,9 @@ try
             Console.Write("> ");
             return Console.ReadLine();
         });
+        
+        if (string.IsNullOrWhiteSpace(value))
+            continue;
 
         if("quit".Equals(value, StringComparison.OrdinalIgnoreCase))
             break;
