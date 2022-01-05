@@ -46,12 +46,14 @@ try
 
         var message = new KafkaMessage
         {
-            Text = value ?? "NA",
+            Text = "NA",
             SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         };
-        
+
+        message.Text = $"(Producer) {value}";
         await producer.Produce(message);
 
+        message.Text = $"(Request) {value}";
         var response = await request.GetResponse<KafkaResponse>(message);
         
         Console.WriteLine(response.Message.Text);
