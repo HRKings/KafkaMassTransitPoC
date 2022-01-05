@@ -41,7 +41,8 @@ try
 
         await producer.Produce(new
         {
-            Text = value
+            Text = value,
+            Number = Random.Shared.Next(1234, 9999)
         });
     }
     while (true);
