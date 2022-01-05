@@ -39,10 +39,10 @@ try
         if("quit".Equals(value, StringComparison.OrdinalIgnoreCase))
             break;
         
-        await producer.Produce(new
+        await producer.Produce(new KafkaMessage
         {
-            Text = value,
-            Number = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+            Text = value ?? "NA",
+            SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
         });
     }
     while (true);
