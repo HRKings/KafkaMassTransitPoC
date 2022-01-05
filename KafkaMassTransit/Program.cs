@@ -1,12 +1,22 @@
 using KafkaMassTransit.Consumers;
 using KafkaMassTransit.Data.Messages;
 using MassTransit;
+using MassTransit.RabbitMqTransport;
 
 var host = Host.CreateDefaultBuilder(args).ConfigureServices(services =>
 {
     services.AddMassTransit(x =>
     {
-        x.UsingInMemory((context,config) => config.ConfigureEndpoints(context));
+        x.AddConsumer<KafkaConsumer>();
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            cfg.Host("amqp://rabbit:password@localhost:5672");
+        
+            cfg.ReceiveEndpoint("kafka-message", (IRabbitMqReceiveEndpointConfigurator ep) =>
+            {
+                ep.ConfigureConsumer<KafkaConsumer>(context);
+            });
+        });
 
         x.AddRider(rider =>
         {
@@ -20,7 +30,7 @@ var host = Host.CreateDefaultBuilder(args).ConfigureServices(services =>
                 {
                     e.CreateIfMissing(t =>
                     {
-                        t.NumPartitions = 2; //number of partitions
+                        t.NumPartitions = 1; //number of partitions
                         t.ReplicationFactor = 1; //number of replicas
                     });
                     

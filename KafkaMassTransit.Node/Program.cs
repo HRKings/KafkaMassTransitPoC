@@ -6,11 +6,15 @@ var services = new ServiceCollection();
 
 services.AddMassTransit(x =>
 {
-    x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("amqp://rabbit:password@localhost:5672");
+    });
 
     x.AddRider(rider =>
     {
         rider.AddProducer<KafkaMessage>("topic-name");
+        rider.AddRequestClient<KafkaMessage>();
 
         rider.UsingKafka((context, k) =>
         {
@@ -27,23 +31,30 @@ await busControl.StartAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)
 try
 {
     var producer = provider.GetRequiredService<ITopicProducer<KafkaMessage>>();
+    var request = provider.GetRequiredService<IRequestClient<KafkaMessage>>();
     do
     {
         var value = await Task.Run(() =>
         {
-            Console.WriteLine($"Enter text to send (or quit to exit)");
+            Console.WriteLine("Enter text to send (or quit to exit)");
             Console.Write("> ");
             return Console.ReadLine();
         });
 
         if("quit".Equals(value, StringComparison.OrdinalIgnoreCase))
             break;
-        
-        await producer.Produce(new KafkaMessage
+
+        var message = new KafkaMessage
         {
             Text = value ?? "NA",
             SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-        });
+        };
+        
+        await producer.Produce(message);
+
+        var response = await request.GetResponse<KafkaResponse>(message);
+        
+        Console.WriteLine(response.Message.Text);
     }
     while (true);
 }
