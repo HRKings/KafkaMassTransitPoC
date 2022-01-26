@@ -1,6 +1,6 @@
-namespace KafkaMassTransit.Data.Messages;
+namespace KafkaMassTransit.Data;
 
 public class KafkaResponse
 {
-    public string Text { get; set; }
+    public string Text { get; init; } = string.Empty;
 }
