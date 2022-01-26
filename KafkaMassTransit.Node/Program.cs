@@ -1,71 +1,46 @@
+using KafkaMassTransit.Consumers;
 using KafkaMassTransit.Data.Messages;
 using MassTransit;
-using MassTransit.KafkaIntegration;
+using MassTransit.RabbitMqTransport;
 
-var services = new ServiceCollection();
-
-services.AddMassTransit(x =>
+var host = Host.CreateDefaultBuilder(args).ConfigureServices(services =>
 {
-    x.UsingRabbitMq((context, cfg) =>
+    services.AddMassTransit(x =>
     {
-        cfg.Host("amqp://rabbit:password@localhost:5672");
-    });
-
-    x.AddRider(rider =>
-    {
-        rider.AddProducer<KafkaMessage>("topic-name");
-        rider.AddRequestClient<KafkaMessage>();
-
-        rider.UsingKafka((context, k) =>
+        x.AddConsumer<KafkaConsumer>();
+        x.UsingRabbitMq((context, cfg) =>
         {
-            k.Host("localhost:9092");
+            cfg.Host("amqp://rabbit:password@localhost:5672");
+        
+            cfg.ReceiveEndpoint("kafka-message", (IRabbitMqReceiveEndpointConfigurator ep) =>
+            {
+                ep.ConfigureConsumer<KafkaConsumer>(context);
+            });
+        });
+
+        x.AddRider(rider =>
+        {
+            rider.AddConsumer<KafkaConsumer>();
+
+            rider.UsingKafka((context, k) =>
+            {
+                k.Host("localhost:9092");
+
+                k.TopicEndpoint<KafkaMessage>("topic-name", "consumer-group-name", e =>
+                {
+                    e.CreateIfMissing(t =>
+                    {
+                        t.NumPartitions = 1; //number of partitions
+                        t.ReplicationFactor = 1; //number of replicas
+                    });
+                    
+                    e.ConfigureConsumer<KafkaConsumer>(context);
+                });
+            });
         });
     });
-});
 
-var provider = services.BuildServiceProvider();
+    services.AddMassTransitHostedService();
+}).Build();
 
-var busControl = provider.GetRequiredService<IBusControl>();
-
-await busControl.StartAsync(new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token);
-try
-{
-    var producer = provider.GetRequiredService<ITopicProducer<KafkaMessage>>();
-    var request = provider.GetRequiredService<IRequestClient<KafkaMessage>>();
-    do
-    {
-        var value = await Task.Run(() =>
-        {
-            Console.WriteLine("Enter text to send (or quit to exit)");
-            Console.Write("> ");
-            return Console.ReadLine();
-        });
-        
-        if (string.IsNullOrWhiteSpace(value))
-            continue;
-
-        if("quit".Equals(value, StringComparison.OrdinalIgnoreCase))
-            break;
-
-        var message = new KafkaMessage
-        {
-            Text = "NA",
-            SentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-        };
-
-        message.Text = $"(Producer) {value}";
-        message.IsEventOnly = true;
-        await producer.Produce(message);
-
-        message.Text = $"(Request) {value}";
-        message.IsEventOnly = false;
-        var response = await request.GetResponse<KafkaResponse>(message);
-        
-        Console.WriteLine(response.Message.Text);
-    }
-    while (true);
-}
-finally
-{
-    await busControl.StopAsync();
-}
+await host.RunAsync();

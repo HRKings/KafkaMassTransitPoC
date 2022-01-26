@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaMassTransit", "KafkaMassTransit\KafkaMassTransit.csproj", "{6E943FB0-2528-4AD7-8121-D05916131FDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaMassTransit.Node", "KafkaMassTransit.Node\KafkaMassTransit.Node.csproj", "{6E943FB0-2528-4AD7-8121-D05916131FDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaMassTransit.Data", "KafkaMassTransit.Data\KafkaMassTransit.Data.csproj", "{4203D3A5-35DC-4050-B022-3FAE762E87B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaMassTransit.Node", "KafkaMassTransit.Node\KafkaMassTransit.Node.csproj", "{DF7C6BB7-5AEA-45E7-93E8-79E1BF889CCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KafkaMassTransit.Client", "KafkaMassTransit.Client\KafkaMassTransit.Client.csproj", "{DF7C6BB7-5AEA-45E7-93E8-79E1BF889CCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

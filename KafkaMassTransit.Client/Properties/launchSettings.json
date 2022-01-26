@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "KafkaMassTransit": {
+    "KafkaMassTransit.Node": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {

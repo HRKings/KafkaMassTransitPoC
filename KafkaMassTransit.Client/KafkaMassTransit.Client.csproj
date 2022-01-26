@@ -4,13 +4,12 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <UserSecretsId>dotnet-KafkaMassTransit-E676966E-D41B-4702-8661-4FEF1E1086EC</UserSecretsId>
-        <RootNamespace>KafkaMassTransit</RootNamespace>
+        <UserSecretsId>dotnet-KafkaMassTransit.Node-92E67F9A-27BE-4F21-B706-6FDC7A2B4126</UserSecretsId>
+        <RootNamespace>KafkaMassTransit.Node</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="MassTransit" Version="7.3.1-develop.340" />
-        <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1-develop.340" />
         <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1-develop.340" />
         <PackageReference Include="MassTransit.Kafka" Version="7.3.1-develop.340" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1-develop.340" />
